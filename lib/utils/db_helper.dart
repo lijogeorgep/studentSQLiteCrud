@@ -24,11 +24,8 @@ abstract class DB {
 
   static void onCreate(Database db, int version) async {
     await db.execute(
-        'CREATE TABLE products (id INTEGER PRIMARY KEY AUTOINCREMENT, productName STRING, categoryId INTEGER, productDesc STRING, price REAL, productPic String)');
-    await db.execute(
-        'CREATE TABLE product_categories (id INTEGER PRIMARY KEY AUTOINCREMENT, categoryName STRING)');
-    await db.execute("INSERT INTO product_categories (categoryName) VALUES ('T-Shirt'), ('Shirt'), ('Trouser'),  ('Shoes');");        
-  }
+        'CREATE TABLE student (id INTEGER PRIMARY KEY AUTOINCREMENT, studentName STRING, age INTEGER, mark INTEGER, studentPic String)');
+     }
 
   static Future<List<Map<String, dynamic>>> query(String table) async =>
       _db.query(table);

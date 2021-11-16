@@ -6,18 +6,18 @@ import 'package:flutter_sqlite/pages/home_page.dart';
 import 'package:flutter_sqlite/services/db_service.dart';
 import 'package:flutter_sqlite/utils/form_helper.dart';
 
-class AddEditProduct extends StatefulWidget {
-  AddEditProduct({Key key, this.model, this.isEditMode = false})
+class AddEditStudent extends StatefulWidget {
+  AddEditStudent({Key key, this.model, this.isEditMode = false})
       : super(key: key);
-  ProductModel model;
+  StudentModel model;
   bool isEditMode;
 
   @override
-  _AddEditProductState createState() => _AddEditProductState();
+  _AddEditStudentState createState() => _AddEditStudentState();
 }
 
-class _AddEditProductState extends State<AddEditProduct> {
-  ProductModel model;
+class _AddEditStudentState extends State<AddEditStudent> {
+  StudentModel model;
   DBService dbService;
   GlobalKey<FormState> globalFormKey = GlobalKey<FormState>();
 
@@ -25,7 +25,7 @@ class _AddEditProductState extends State<AddEditProduct> {
   void initState() {
     super.initState();
     dbService = new DBService();
-    model = new ProductModel();
+    model = new StudentModel();
 
     if (widget.isEditMode) {
       model = widget.model;
@@ -36,9 +36,9 @@ class _AddEditProductState extends State<AddEditProduct> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
+        backgroundColor: Colors.black,
         automaticallyImplyLeading: true,
-        title: Text(widget.isEditMode ? "Edit Product" : "Add Product"),
+        title: Text(widget.isEditMode ? "Edit Student" : "Add Student"),
       ),
       body: new Form(
         key: globalFormKey,
@@ -57,59 +57,67 @@ class _AddEditProductState extends State<AddEditProduct> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FormHelper.fieldLabel("Product Name"),
+                FormHelper.fieldLabel("Student Name"),
                 FormHelper.textInput(
                   context,
-                  model.productName,
+                  model.studentName,
                   (value) => {
-                    this.model.productName = value,
+                    this.model.studentName = value,
                   },
                   onValidate: (value) {
                     if (value.toString().isEmpty) {
-                      return 'Please enter Product Name.';
+                      return 'Please enter student Name.';
                     }
                     return null;
                   },
                 ),
-                FormHelper.fieldLabel("Product Description"),
-                FormHelper.textInput(
-                    context,
-                    model.productDesc,
-                    (value) => {
-                          this.model.productDesc = value,
-                        },
-                    isTextArea: true, onValidate: (value) {
-                  return null;
-                }),
-                FormHelper.fieldLabel("Product Price"),
+                FormHelper.fieldLabel("student age"),
                 FormHelper.textInput(
                   context,
-                  model.price,
+                  model.age,
                   (value) => {
-                    this.model.price = double.parse(value),
+                    this.model.age = int.parse(value),
                   },
                   isNumberInput: true,
                   onValidate: (value) {
                     if (value.toString().isEmpty) {
-                      return 'Please enter price.';
+                      return 'Please enter age.';
                     }
 
                     if (value.toString().isNotEmpty &&
                         double.parse(value.toString()) <= 0) {
-                      return 'Please enter valid price.';
+                      return 'Please enter valid age.';
                     }
                     return null;
                   },
                 ),
-                FormHelper.fieldLabel("Product Category"),
-                _productCategory(),
-                FormHelper.fieldLabel("Select Product Photo"),
+                FormHelper.fieldLabel("student mark"),
+                FormHelper.textInput(
+                  context,
+                  model.mark,
+                      (value) => {
+                    this.model.mark = int.parse(value),
+                  },
+                  isNumberInput: true,
+                  onValidate: (value) {
+                    if (value.toString().isEmpty) {
+                      return 'Please enter mark.';
+                    }
+
+                    if (value.toString().isNotEmpty &&
+                        double.parse(value.toString()) <= 0) {
+                      return 'Please enter valid mark.';
+                    }
+                    return null;
+                  },
+                ),
+                FormHelper.fieldLabel("Select student Photo"),
                 FormHelper.picPicker(
-                  model.productPic,
+                  model.studentPic,
                   (file) => {
                     setState(
                       () {
-                        model.productPic = file.path;
+                        model.studentPic = file.path;
                       },
                     )
                   },
@@ -123,30 +131,7 @@ class _AddEditProductState extends State<AddEditProduct> {
     );
   }
 
-  Widget _productCategory() {
-    return FutureBuilder<List<CategoryModel>>(
-      future: dbService.getCategories(),
-      builder: (BuildContext context,
-          AsyncSnapshot<List<CategoryModel>> categories) {
-        if (categories.hasData) {
-          return FormHelper.selectDropdown(
-            context,
-            model.categoryId,
-            categories.data,
-            (value) => {this.model.categoryId = int.parse(value)},
-            onValidate: (value) {
-              if (value == null) {
-                return 'Please enter Product Category.';
-              }
-              return null;
-            },
-          );
-        }
 
-        return CircularProgressIndicator();
-      },
-    );
-  }
 
   bool validateAndSave() {
     final form = globalFormKey.currentState;
@@ -165,10 +150,10 @@ class _AddEditProductState extends State<AddEditProduct> {
           if (validateAndSave()) {
             print(model.toMap());
             if (widget.isEditMode) {
-              dbService.updateProduct(model).then((value) {
+              dbService.updateStudent(model).then((value) {
                 FormHelper.showMessage(
                   context,
-                  "SQFLITE CRUD",
+                  "Student",
                   "Data Submitted Successfully",
                   "Ok",
                   () {
@@ -182,10 +167,10 @@ class _AddEditProductState extends State<AddEditProduct> {
                 );
               });
             } else {
-              dbService.addProduct(model).then((value) {
+              dbService.addStudent(model).then((value) {
                FormHelper.showMessage(
                   context,
-                  "SQFLITE CRUD",
+                  "Student",
                   "Data Modified Successfully",
                   "Ok",
                   () {
@@ -205,10 +190,10 @@ class _AddEditProductState extends State<AddEditProduct> {
           height: 40.0,
           margin: EdgeInsets.all(10),
           width: 100,
-          color: Colors.blueAccent,
+          color: Colors.black,
           child: Center(
             child: Text(
-              "Save Product",
+              "Save Details",
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,

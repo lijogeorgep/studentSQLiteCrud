@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sqlite/models/data_model.dart';
@@ -25,20 +23,20 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.redAccent,
-        title: Text("SQFLITE CRUD"),
+        backgroundColor: Colors.black,
+        title: Text("Student Details"),
       ),
       body: _fetchData(),
     );
   }
 
   Widget _fetchData() {
-    return FutureBuilder<List<ProductModel>>(
-      future: dbService.getProducts(),
+    return FutureBuilder<List<StudentModel>>(
+      future: dbService.getStudents(),
       builder:
-          (BuildContext context, AsyncSnapshot<List<ProductModel>> products) {
-        if (products.hasData) {
-          return _buildUI(products.data);
+          (BuildContext context, AsyncSnapshot<List<StudentModel>> students) {
+        if (students.hasData) {
+          return _buildUI(students.data);
         }
 
         return CircularProgressIndicator();
@@ -46,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildUI(List<ProductModel> products) {
+  Widget _buildUI(List<StudentModel> students) {
     List<Widget> widgets = new List<Widget>();
 
     widgets.add(
@@ -57,20 +55,25 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddEditProduct(),
+                builder: (context) => AddEditStudent(),
               ),
             );
           },
-          child: Container(
-            height: 40.0,
-            width: 100,
-            color: Colors.blueAccent,
-            child: Center(
-              child: Text(
-                "Add Product",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+
+              color: Colors.black,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    "Add Student",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -82,7 +85,7 @@ class _HomePageState extends State<HomePage> {
     widgets.add(
       Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [_buildDataTable(products)],
+        children: [_buildDataTable(students)],
       ),
     );
 
@@ -95,12 +98,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDataTable(List<ProductModel> model) {
+  Widget _buildDataTable(List<StudentModel> model) {
+
     return DataTable(
       columns: [
+
         DataColumn(
           label: Text(
-            "Product Name",
+            "Name",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
@@ -109,10 +114,19 @@ class _HomePageState extends State<HomePage> {
         ),
         DataColumn(
           label: Text(
-            "Price",
+            "Age",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        DataColumn(
+          label: Text(
+            "Mark",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),
@@ -131,15 +145,24 @@ class _HomePageState extends State<HomePage> {
           .map(
             (data) => DataRow(
               cells: <DataCell>[
+
                 DataCell(
                   Text(
-                    data.productName,
+                    data.studentName,
                     style: TextStyle(fontSize: 12),
                   ),
                 ),
                 DataCell(
                   Text(
-                    data.price.toString(),
+                    data.age.toString(),
+                    style: TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    data.mark.toString(),
                     style: TextStyle(
                       fontSize: 12,
                     ),
@@ -157,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => AddEditProduct(
+                                builder: (context) => AddEditStudent(
                                   isEditMode: true,
                                   model: data,
                                 ),
@@ -171,11 +194,11 @@ class _HomePageState extends State<HomePage> {
                           onPressed: () {
                             FormHelper.showMessage(
                               context,
-                              "SQFLITE CRUD",
+                              "Student",
                               "Do you want to delete this record?",
                               "Yes",
                               () {
-                                dbService.deleteProduct(data).then((value) {
+                                dbService.deleteStudent(data).then((value) {
                                   setState(() {
                                     Navigator.of(context).pop();
                                   });

@@ -2,11 +2,11 @@ import 'package:flutter_sqlite/models/data_model.dart';
 import 'package:flutter_sqlite/utils/db_helper.dart';
 
 class DBService {
-  Future<bool> addProduct(ProductModel model) async {
+  Future<bool> addStudent(StudentModel model) async {
     await DB.init();
     bool isSaved = false;
     if (model != null) {
-      int inserted = await DB.insert(ProductModel.table, model);
+      int inserted = await DB.insert(StudentModel.table, model);
 
       isSaved = inserted == 1 ? true : false;
     }
@@ -14,41 +14,35 @@ class DBService {
     return isSaved;
   }
 
-  Future<bool> updateProduct(ProductModel model) async {
+  Future<bool> updateStudent(StudentModel model) async {
     await DB.init();
-    bool isSaved = false;
+    bool isUpdated = false;
     if (model != null) {
-      int inserted = await DB.update(ProductModel.table, model);
+      int updated = await DB.update(StudentModel.table, model);
 
-      isSaved = inserted == 1 ? true : false;
+      isUpdated = updated == 1 ? true : false;
     }
 
-    return isSaved;
+    return isUpdated;
   }
 
-  Future<List<ProductModel>> getProducts() async {
+  Future<List<StudentModel>> getStudents() async {
     await DB.init();
-    List<Map<String, dynamic>> products = await DB.query(ProductModel.table);
+    List<Map<String, dynamic>> students = await DB.query(StudentModel.table);
 
-    return products.map((item) => ProductModel.fromMap(item)).toList();
+    return students.map((item) => StudentModel.fromMap(item)).toList();
   }
 
-  Future<List<CategoryModel>> getCategories() async {
-    await DB.init();
-    List<Map<String, dynamic>> categories = await DB.query(CategoryModel.table);
 
-    return categories.map((item) => CategoryModel.fromMap(item)).toList();
-  }
-
-  Future<bool> deleteProduct(ProductModel model) async {
+  Future<bool> deleteStudent(StudentModel model) async {
     await DB.init();
-    bool isSaved = false;
+    bool isDeleted = false;
     if (model != null) {
-      int inserted = await DB.delete(ProductModel.table, model);
+      int deleted = await DB.delete(StudentModel.table, model);
 
-      isSaved = inserted == 1 ? true : false;
+      isDeleted = deleted == 1 ? true : false;
     }
 
-    return isSaved;
+    return isDeleted;
   }
 }
